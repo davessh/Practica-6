@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 
 public class Diccionario {
@@ -62,5 +60,23 @@ public class Diccionario {
      */
     public int obtenerPuntaje(String palabra) {
         return palabras.getOrDefault(palabra.toLowerCase(), 0);//si no encuentra la palabra devuelve 0
+    }
+
+    public void agregarPalabra(String palabra) {
+        palabra = palabra.trim().toLowerCase();
+        if (!palabra.isEmpty() && !contienePalabra(palabra)) {
+            palabras.put(palabra, calcularPuntajePalabra(palabra));
+            guardarEnArchivo(palabra);
+        }
+    }
+
+    private void guardarEnArchivo(String palabra) {
+        try (FileWriter fw = new FileWriter("palabras.txt", true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.println(palabra);
+        } catch (IOException e) {
+            System.out.println("Error al escribir en el archivo: " + e.getMessage());
+        }
     }
 }

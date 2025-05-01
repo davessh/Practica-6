@@ -165,4 +165,36 @@ public class MagoDeLasPalabras {
                     .orElse("No hay ganador");
         }
     }
+
+    //Método que antes se implementaba en la interfazUsuario
+    public boolean verificarLetrasDisponibles(String palabra) {
+        Map<Character, Integer> contadorLetras = new HashMap<>();
+
+        for (char c : getLetrasGeneradas()) {
+            char letraMinuscula = Character.toLowerCase(c);
+            contadorLetras.put(letraMinuscula, contadorLetras.getOrDefault(letraMinuscula, 0) + 1);
+        }
+
+        for (char c : palabra.toCharArray()) {
+            int disponibles = contadorLetras.getOrDefault(c, 0);
+            if (disponibles <= 0) {
+                return false;
+            }
+            contadorLetras.put(c, disponibles - 1);
+        }
+
+        return true;
+    }
+
+    //Agregar una palabra al diccionario
+    public void agregarPalabraADiccionario(String palabra) {
+        diccionario.agregarPalabra(palabra);
+    }
+
+    //Método para devolverle los puntos si el jugador agrega una palabra al diccionario
+    //porque se convierte en una válida
+    public void devolverPuntos(String jugador, int puntos) {
+        int totalActual = puntuaciones.get(jugador);
+        puntuaciones.put(jugador, totalActual + puntos);
+    }
 }
