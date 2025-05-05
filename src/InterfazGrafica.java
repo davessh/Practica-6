@@ -8,7 +8,7 @@ public class InterfazGrafica {
 
     //Componentes principales
     private JFrame frame;
-    private JPanel panelLetras, panelPalabra, panelPuntuaciones, panelBotones;
+    private JPanel panelLetras, panelPalabra, panelPuntuaciones, panelBotones, panelPalabrasUsadas;
     private JTextField campoTexto;
     private JButton botonEnviar, botonPasar, botonJugar, botonSalir;
     private ArrayList<JButton> botonesLetras;
@@ -16,6 +16,7 @@ public class InterfazGrafica {
     private JLabel etiquetaTurnoActual;
     private JLabel etiquetaRonda;
     private JLabel etiquetaPuntosRonda;
+    private JTextArea areaPalabrasUsadas;
     private StringBuilder palabraActual;
     private ArrayList<Integer> indicesUsados;
 
@@ -27,7 +28,6 @@ public class InterfazGrafica {
         this.indicesUsados = new ArrayList<>();
         iniciarMenuJuego();
     }
-
     public void iniciarMenuJuego() {
         frame = new JFrame("Mago de las Palabras");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,18 +151,41 @@ public class InterfazGrafica {
         juego.generarLetras(juego.getDificultad());
         frame = new JFrame("Mago de las Palabras - Juego");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 700);
-        frame.setLayout(null);
+        frame.setSize(1200, 700); // Aumentamos el ancho para acomodar el nuevo panel
+        frame.setLayout(new BorderLayout());
+
+        // Panel principal que contendrá todo excepto el panel de palabras usadas
+        JPanel panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(null);
+        panelPrincipal.setBackground(new Color(245, 245, 255));
+
+        // Panel para palabras usadas (lado izquierdo)
+        panelPalabrasUsadas = new JPanel(new BorderLayout());
+        panelPalabrasUsadas.setPreferredSize(new Dimension(250, frame.getHeight()));
+        panelPalabrasUsadas.setBackground(new Color(240, 240, 250));
+        panelPalabrasUsadas.setBorder(BorderFactory.createTitledBorder("Palabras Usadas"));
+
+        areaPalabrasUsadas = new JTextArea();
+        areaPalabrasUsadas.setEditable(false);
+        areaPalabrasUsadas.setFont(new Font("Serif", Font.PLAIN, 14));
+        areaPalabrasUsadas.setLineWrap(true);
+        areaPalabrasUsadas.setWrapStyleWord(true);
+        areaPalabrasUsadas.setBackground(new Color(240, 240, 250));
+
+        JScrollPane scrollPalabras = new JScrollPane(areaPalabrasUsadas);
+        panelPalabrasUsadas.add(scrollPalabras, BorderLayout.CENTER);
+
+        frame.add(panelPalabrasUsadas, BorderLayout.WEST);
 
         // Panel para mostrar las letras generadas
         panelLetras = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        panelLetras.setBounds(250, 100, 500, 150);
+        panelLetras.setBounds(350, 100, 500, 150);
         panelLetras.setBackground(new Color(230, 230, 250));
-        frame.add(panelLetras);
+        panelPrincipal.add(panelLetras);
 
         // Panel para la palabra que se está formando
         panelPalabra = new JPanel(new BorderLayout());
-        panelPalabra.setBounds(250, 270, 500, 80);
+        panelPalabra.setBounds(350, 270, 500, 80);
         panelPalabra.setBackground(new Color(255, 250, 240));
 
         campoTexto = new JTextField();
@@ -171,20 +194,20 @@ public class InterfazGrafica {
         campoTexto.setEditable(false);
         panelPalabra.add(campoTexto, BorderLayout.CENTER);
 
-        frame.add(panelPalabra);
+        panelPrincipal.add(panelPalabra);
 
         // Panel para puntuaciones
         panelPuntuaciones = new JPanel();
         panelPuntuaciones.setLayout(new BoxLayout(panelPuntuaciones, BoxLayout.Y_AXIS));
-        panelPuntuaciones.setBounds(800, 100, 170, 250);
-        panelPuntuaciones.setBackground(new Color(240, 248, 255)); // AliceBlue
+        panelPuntuaciones.setBounds(900, 100, 170, 250);
+        panelPuntuaciones.setBackground(new Color(240, 248, 255));
         panelPuntuaciones.setBorder(BorderFactory.createTitledBorder("Puntuaciones"));
-        frame.add(panelPuntuaciones);
+        panelPrincipal.add(panelPuntuaciones);
 
         // Panel de botones
         panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        panelBotones.setBounds(250, 370, 500, 100);
-        panelBotones.setBackground(new Color(250, 240, 230)); // Linen
+        panelBotones.setBounds(350, 370, 500, 100);
+        panelBotones.setBackground(new Color(250, 240, 230));
 
         botonEnviar = new JButton("Enviar Palabra");
         botonEnviar.setPreferredSize(new Dimension(150, 40));
@@ -197,41 +220,44 @@ public class InterfazGrafica {
         panelBotones.add(botonEnviar);
         panelBotones.add(botonPasar);
 
-        frame.add(panelBotones);
+        panelPrincipal.add(panelBotones);
 
         // Etiqueta para el turno actual
         etiquetaTurnoActual = new JLabel();
-        etiquetaTurnoActual.setBounds(250, 30, 500, 30);
+        etiquetaTurnoActual.setBounds(350, 30, 500, 30);
         etiquetaTurnoActual.setFont(new Font("Arial", Font.BOLD, 18));
         etiquetaTurnoActual.setHorizontalAlignment(JLabel.CENTER);
-        frame.add(etiquetaTurnoActual);
+        panelPrincipal.add(etiquetaTurnoActual);
 
         // Etiqueta para la ronda
         etiquetaRonda = new JLabel();
-        etiquetaRonda.setBounds(250, 60, 500, 30);
+        etiquetaRonda.setBounds(350, 60, 500, 30);
         etiquetaRonda.setFont(new Font("Arial", Font.ITALIC, 16));
         etiquetaRonda.setHorizontalAlignment(JLabel.CENTER);
-        frame.add(etiquetaRonda);
+        panelPrincipal.add(etiquetaRonda);
 
         // Etiqueta para los puntos de la ronda
         etiquetaPuntosRonda = new JLabel();
-        etiquetaPuntosRonda.setBounds(250, 480, 500, 30);
+        etiquetaPuntosRonda.setBounds(350, 480, 500, 30);
         etiquetaPuntosRonda.setFont(new Font("Arial", Font.BOLD, 16));
         etiquetaPuntosRonda.setHorizontalAlignment(JLabel.CENTER);
-        frame.add(etiquetaPuntosRonda);
+        panelPrincipal.add(etiquetaPuntosRonda);
 
-        frame.getContentPane().setBackground(new Color(245, 245, 255));
+        frame.add(panelPrincipal, BorderLayout.CENTER);
 
         botonEnviar.addActionListener(e -> procesarPalabra());
         botonPasar.addActionListener(e -> pasarTurno());
         actualizarPuntuaciones();
+        actualizarPalabrasUsadas(); // Actualizamos el panel de palabras usadas
         iniciarRonda();
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
     private void iniciarRonda() {
+        // Limpiar el panel de palabras usadas al comenzar nueva ronda
+        areaPalabrasUsadas.setText("");
+
         etiquetaRonda.setText("RONDA " + juego.getRondaActual() + " de 3");
         etiquetaTurnoActual.setText("Turno de: " + juego.getJugadorActual());
 
@@ -305,7 +331,7 @@ public class InterfazGrafica {
                     "Palabra repetida", JOptionPane.WARNING_MESSAGE);
             juego.siguienteTurno();
             actualizarInterfazTurno();
-            resetearPalabraSinNuevasLetras(); // CAMBIADO: Usar resetearPalabraSinNuevasLetras en lugar de resetearPalabra
+            resetearPalabraSinNuevasLetras();
             return;
         }
 
@@ -319,7 +345,7 @@ public class InterfazGrafica {
             juego.siguienteTurno();
             actualizarInterfazTurno();
             actualizarPuntuaciones();
-            resetearPalabraSinNuevasLetras(); // CAMBIADO: Usar resetearPalabraSinNuevasLetras en lugar de resetearPalabra
+            resetearPalabraSinNuevasLetras();
             return;
         }
 
@@ -347,7 +373,7 @@ public class InterfazGrafica {
             juego.siguienteTurno();
             actualizarInterfazTurno();
             actualizarPuntuaciones();
-            mostrarPalabrasUsadas();
+            actualizarPalabrasUsadas(); // Actualizamos el panel de palabras usadas
             resetearPalabraSinNuevasLetras();
             return;
         }
@@ -363,12 +389,31 @@ public class InterfazGrafica {
         juego.siguienteTurno();
         actualizarInterfazTurno();
         actualizarPuntuaciones();
-        mostrarPalabrasUsadas();
+        actualizarPalabrasUsadas(); // Actualizamos el panel de palabras usadas
         resetearPalabraSinNuevasLetras();
 
         if (juego.juegoTerminado()) {
             mostrarResultadosFinales();
         }
+    }
+
+    private void actualizarPalabrasUsadas() {
+        HashSet<String> palabrasUsadas = juego.getPalabrasUsadas();
+
+        if (palabrasUsadas.isEmpty()) {
+            areaPalabrasUsadas.setText("No hay palabras usadas aún en esta ronda");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder("Palabras usadas en esta ronda:\n\n");
+
+        for (String palabra : palabrasUsadas) {
+            sb.append("• ").append(palabra).append(" (")
+                    .append(juego.obtenerPuntajePalabra(palabra)).append(" pts)\n");
+        }
+
+        areaPalabrasUsadas.setText(sb.toString());
+        areaPalabrasUsadas.setCaretPosition(0); // Mover el scroll al inicio
     }
 
     private void pasarTurno() {
@@ -430,31 +475,6 @@ public class InterfazGrafica {
         mostrarLetrasGeneradas();
     }
 
-    private void mostrarPalabrasUsadas() {
-        HashSet<String> palabrasUsadas = juego.getPalabrasUsadas();
-
-        if (palabrasUsadas.isEmpty()) {
-            return;
-        }
-
-        StringBuilder sb = new StringBuilder("Palabras usadas en esta ronda:\n\n");
-
-        for (String palabra : palabrasUsadas) {
-            sb.append("• ").append(palabra).append(" (").append(juego.obtenerPuntajePalabra(palabra)).append(" pts)\n");
-        }
-
-        JTextArea areaTexto = new JTextArea(sb.toString());
-        areaTexto.setEditable(false);
-        areaTexto.setLineWrap(true);
-        areaTexto.setWrapStyleWord(true);
-        areaTexto.setFont(new Font("Serif", Font.PLAIN, 14));
-
-        JScrollPane scrollPane = new JScrollPane(areaTexto);
-        scrollPane.setPreferredSize(new Dimension(300, 200));
-
-        JOptionPane.showMessageDialog(frame, scrollPane,
-                "Palabras Usadas", JOptionPane.INFORMATION_MESSAGE);
-    }
 
     private void actualizarPuntuaciones() {
         panelPuntuaciones.removeAll();
