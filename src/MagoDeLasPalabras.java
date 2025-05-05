@@ -21,7 +21,7 @@ public class MagoDeLasPalabras {
         this.diccionario = new Diccionario();
         this.rondaActual = 1;
         this.nombresJugadores = new ArrayList<>();
-        diccionario.cargarDesdeArchivo("palabras.txt");
+        diccionario.cargarDesdeArchivo("G:\\4toSemestre\\POO\\Practica-6\\src\\palabras.txt");
     }
 
     // Getters y setters
@@ -109,6 +109,12 @@ public class MagoDeLasPalabras {
      * Suma los puntos al jugador y la guarda como palabra utilizada.
      */
     public boolean registrarPalabra(String jugador, String palabra) {
+        // Verificar que el jugador exista en las puntuaciones
+        if (!puntuaciones.containsKey(jugador)) {
+            System.out.println("ERROR: El jugador " + jugador + " no existe en las puntuaciones");
+            return false;
+        }
+
         if (!esPalabraUsada(palabra) && esPalabraValida(palabra)) {
             int puntos = obtenerPuntajePalabra(palabra);
             int totalActual = puntuaciones.get(jugador);
@@ -123,6 +129,11 @@ public class MagoDeLasPalabras {
      * Resta puntos al jugador. El puntaje no puede ser menor que cero.
      */
     public void restarPuntos(String jugador, int puntos) {
+        // Verificar que el jugador exista en las puntuaciones
+        if (!puntuaciones.containsKey(jugador)) {
+            System.out.println("ERROR: El jugador " + jugador + " no existe en las puntuaciones");
+            return;
+        }
         int totalActual = puntuaciones.get(jugador);
         puntuaciones.put(jugador, Math.max(0, totalActual - puntos));
     }
@@ -164,5 +175,37 @@ public class MagoDeLasPalabras {
                     .findFirst()
                     .orElse("No hay ganador");
         }
+    }
+
+    //Método que antes se implementaba en la interfazUsuario
+    public boolean verificarLetrasDisponibles(String palabra) {
+        Map<Character, Integer> contadorLetras = new HashMap<>();
+
+        for (char c : getLetrasGeneradas()) {
+            char letraMinuscula = Character.toLowerCase(c);
+            contadorLetras.put(letraMinuscula, contadorLetras.getOrDefault(letraMinuscula, 0) + 1);
+        }
+
+        for (char c : palabra.toCharArray()) {
+            int disponibles = contadorLetras.getOrDefault(c, 0);
+            if (disponibles <= 0) {
+                return false;
+            }
+            contadorLetras.put(c, disponibles - 1);
+        }
+
+        return true;
+    }
+
+    //Agregar una palabra al diccionario
+    public void agregarPalabraADiccionario(String palabra) {
+        diccionario.agregarPalabra(palabra);
+    }
+
+    //Método para devolverle los puntos si el jugador agrega una palabra al diccionario
+    //porque se convierte en una válida
+    public void devolverPuntos(String jugador, int puntos) {
+        int totalActual = puntuaciones.get(jugador);
+        puntuaciones.put(jugador, totalActual + puntos);
     }
 }
