@@ -32,15 +32,20 @@ public class MagoDeLasPalabras {
 
     public void siguienteTurno() {
         jugadorActualIndex = (jugadorActualIndex + 1) % numeroDeJugadores;
-        jugadoresQuePasaron = 0;
+        //jugadoresQuePasaron = 0;
     }
 
 
     public void jugadorPaso() {
         jugadoresQuePasaron++;
+        System.out.println("Jugador pasó. Total que han pasado: " + jugadoresQuePasaron + " de " + numeroDeJugadores);
+
+        // Si todos los jugadores han pasado, iniciamos nueva ronda
         if (jugadoresQuePasaron >= numeroDeJugadores) {
+            System.out.println("Todos los jugadores pasaron. Iniciando nueva ronda...");
             iniciarNuevaRonda();
         } else {
+            // Si no han pasado todos, solo cambiamos al siguiente jugador
             siguienteTurno();
         }
     }
@@ -159,23 +164,20 @@ public class MagoDeLasPalabras {
         puntuaciones.put(jugador, Math.max(0, totalActual - puntos));
     }
 
-     public void iniciarNuevaRonda() {
-     if (rondaActual >= TOTAL_RONDAS) {
-     rondaActual = TOTAL_RONDAS + 1; // Para que juegoTerminado() devuelva true
-     return;
-     }
+    public void iniciarNuevaRonda() {
+        if (rondaActual >= TOTAL_RONDAS) {
+            rondaActual = TOTAL_RONDAS + 1;
+            return;
+        }
 
-     rondaActual++;  // Primero incrementamos la ronda
-     palabrasUsadas.clear();
-     generarLetras(dificultad);
-     jugadorActualIndex = 0;
-     jugadoresQuePasaron = 0;
-     }
-
-    public void avanzarRonda() {
         rondaActual++;
-        iniciarNuevaRonda();
-    }
+        palabrasUsadas.clear();
+        generarLetras(dificultad);
+        jugadorActualIndex = 0;
+        jugadoresQuePasaron = 0;
+     }
+
+
 
     public String determinarGanador() {
         if (puntuaciones.isEmpty()) {
