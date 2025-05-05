@@ -1,5 +1,5 @@
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class MagoDeLasPalabras {
     private HashMap<String, Integer> puntuaciones; // Nombre del jugador → puntaje total
@@ -7,21 +7,42 @@ public class MagoDeLasPalabras {
     private int numeroDeJugadores;
     private int dificultad;
     private int rondaActual;
-    private static final int TOTAL_RONDAS = 3;
+    public static final int TOTAL_RONDAS = 3;
     private Diccionario diccionario;
     private List<Character> letrasGeneradas;
     private ArrayList<String> nombresJugadores;
+    private int jugadorActualIndex;
+    private int jugadoresQuePasaron;
 
-    /**
-     * Constructor principal. Inicializa todas las estructuras necesarias y carga el diccionario desde archivo.
-     */
     public MagoDeLasPalabras() {
         this.puntuaciones = new HashMap<>();
         this.palabrasUsadas = new HashSet<>();
         this.diccionario = new Diccionario();
         this.rondaActual = 1;
         this.nombresJugadores = new ArrayList<>();
-        diccionario.cargarDesdeArchivo("G:\\4toSemestre\\POO\\Practica-6\\src\\palabras.txt");
+        this.jugadorActualIndex = 0;
+        this.jugadoresQuePasaron = 0;
+        diccionario.cargarDesdeArchivo("C:\\Users\\Usuario\\IdeaProjects\\Practica-6.2\\src\\palabras.txt");
+    }
+
+    public String getJugadorActual() {
+        if (nombresJugadores.isEmpty()) return "";
+        return nombresJugadores.get(jugadorActualIndex);
+    }
+
+    public void siguienteTurno() {
+        jugadorActualIndex = (jugadorActualIndex + 1) % numeroDeJugadores;
+        jugadoresQuePasaron = 0;
+    }
+
+
+    public void jugadorPaso() {
+        jugadoresQuePasaron++;
+        if (jugadoresQuePasaron >= numeroDeJugadores) {
+            iniciarNuevaRonda();
+        } else {
+            siguienteTurno();
+        }
     }
 
     // Getters y setters
@@ -138,20 +159,24 @@ public class MagoDeLasPalabras {
         puntuaciones.put(jugador, Math.max(0, totalActual - puntos));
     }
 
-    /**
-     * Avanza a la siguiente ronda y reinicia las palabras usadas.
-     * También se generan nuevas letras para la nueva ronda.
-     */
-    public void iniciarNuevaRonda() {
+     public void iniciarNuevaRonda() {
+     if (rondaActual >= TOTAL_RONDAS) {
+     rondaActual = TOTAL_RONDAS + 1; // Para que juegoTerminado() devuelva true
+     return;
+     }
+
+     rondaActual++;  // Primero incrementamos la ronda
+     palabrasUsadas.clear();
+     generarLetras(dificultad);
+     jugadorActualIndex = 0;
+     jugadoresQuePasaron = 0;
+     }
+
+    public void avanzarRonda() {
         rondaActual++;
-        palabrasUsadas.clear();
-        generarLetras(dificultad);
+        iniciarNuevaRonda();
     }
 
-    /**
-     * Determina el ganador del juego al finalizar las rondas.
-     * Si hay empate, lo informa. Si no hay jugadores, también.
-     */
     public String determinarGanador() {
         if (puntuaciones.isEmpty()) {
             return "No hay jugadores";
@@ -177,7 +202,6 @@ public class MagoDeLasPalabras {
         }
     }
 
-    //Método que antes se implementaba en la interfazUsuario
     public boolean verificarLetrasDisponibles(String palabra) {
         Map<Character, Integer> contadorLetras = new HashMap<>();
 
