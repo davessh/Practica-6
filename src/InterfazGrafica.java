@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class InterfazGrafica {
         panelMenu.add(Box.createVerticalStrut(20));
         panelMenu.add(tituloLabel);
 
-        ImageIcon icono = new ImageIcon("G:\\4toSemestre\\POO\\Practica-6\\src\\mago.png");
+        ImageIcon icono = new ImageIcon("C:\\Users\\Usuario\\IdeaProjects\\Practica-6.2\\src\\mago.png");
         Image imagen = icono.getImage();
         Image nuevaImagen = imagen.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
         icono = new ImageIcon(nuevaImagen);
@@ -83,7 +82,7 @@ public class InterfazGrafica {
     private void inicializarJugadores() {
         int numeroDeJugadores = 0;
 
-        // Diálogo para seleccionar número de jugadores
+        //seleccionar número de jugadores
         while (numeroDeJugadores < 2 || numeroDeJugadores > 4) {
             String input = JOptionPane.showInputDialog(frame,
                     "Ingrese el número de jugadores (2 a 4):",
@@ -109,7 +108,7 @@ public class InterfazGrafica {
 
         juego.setNumeroDeJugadores(numeroDeJugadores);
 
-        // Diálogo para seleccionar dificultad
+        // Seleccion de dificultad
         Object[] opciones = {"Normal", "Experto"};
         int opcion = JOptionPane.showOptionDialog(frame,
                 "Seleccione la dificultad del juego:",
@@ -142,18 +141,14 @@ public class InterfazGrafica {
 
             juego.inicializarJugador(nombre);
         }
-
-        // Iniciar el juego
         iniciarJuego();
     }
 
     private void iniciarJuego() {
-        // Cerrar el frame anterior
         if (frame != null) {
             frame.dispose();
         }
-
-        // nuevo frame para el juego
+        juego.generarLetras(juego.getDificultad());
         frame = new JFrame("Mago de las Palabras - Juego");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 700);
@@ -225,14 +220,10 @@ public class InterfazGrafica {
         etiquetaPuntosRonda.setHorizontalAlignment(JLabel.CENTER);
         frame.add(etiquetaPuntosRonda);
 
-        // Agregar fondo
         frame.getContentPane().setBackground(new Color(245, 245, 255));
 
-        // Configurar los botones
         botonEnviar.addActionListener(e -> procesarPalabra());
         botonPasar.addActionListener(e -> pasarTurno());
-
-        // Actualizar la información del juego
         actualizarPuntuaciones();
         iniciarRonda();
 
@@ -241,23 +232,14 @@ public class InterfazGrafica {
     }
 
     private void iniciarRonda() {
-        // Actualizar información de la ronda
         etiquetaRonda.setText("RONDA " + juego.getRondaActual() + " de 3");
+        etiquetaTurnoActual.setText("Turno de: " + juego.getJugadorActual());
 
-        // Actualizar el turno
-        String primerJugador = juego.getNombresJugadores().get(0);
-        etiquetaTurnoActual.setText("Turno de: " + primerJugador);
-
-        // Generar letras según la dificultad
-        juego.generarLetras(juego.getDificultad());
-
-        // Mostrar las letras en el panel
+        // Mostrar las letras generadas
         mostrarLetrasGeneradas();
 
-        // Limpiar campo de texto
-        campoTexto.setText("");
-        palabraActual = new StringBuilder();
-        indicesUsados.clear();
+        resetearPalabraSinNuevasLetras();
+        actualizarPuntuaciones();
     }
 
     private void mostrarLetrasGeneradas() {
@@ -286,7 +268,7 @@ public class InterfazGrafica {
             panelLetras.add(botonLetra);
         }
 
-        // Agregar botón para borrar
+        // Agregar botón para borrar letras
         JButton botonBorrar = new JButton("←");
         botonBorrar.setFont(new Font("Arial", Font.BOLD, 24));
         botonBorrar.setPreferredSize(new Dimension(60, 60));
@@ -308,7 +290,7 @@ public class InterfazGrafica {
 
     private void procesarPalabra() {
         String palabra = palabraActual.toString().toLowerCase();
-        String jugadorActual = etiquetaTurnoActual.getText().substring(9); // Extrae el nombre del jugador
+        String jugadorActual = juego.getJugadorActual();
 
         if (palabra.isEmpty()) {
             JOptionPane.showMessageDialog(frame,
@@ -321,6 +303,9 @@ public class InterfazGrafica {
             JOptionPane.showMessageDialog(frame,
                     "Esa palabra ya fue usada en esta ronda.\nNo se otorgan puntos.",
                     "Palabra repetida", JOptionPane.WARNING_MESSAGE);
+            juego.siguienteTurno();
+            actualizarInterfazTurno();
+            resetearPalabraSinNuevasLetras(); // CAMBIADO: Usar resetearPalabraSinNuevasLetras en lugar de resetearPalabra
             return;
         }
 
@@ -331,7 +316,10 @@ public class InterfazGrafica {
                             "Se restan " + puntosPenalizacion + " puntos.",
                     "Letras inválidas", JOptionPane.ERROR_MESSAGE);
             juego.restarPuntos(jugadorActual, puntosPenalizacion);
+            juego.siguienteTurno();
+            actualizarInterfazTurno();
             actualizarPuntuaciones();
+            resetearPalabraSinNuevasLetras(); // CAMBIADO: Usar resetearPalabraSinNuevasLetras en lugar de resetearPalabra
             return;
         }
 
@@ -356,8 +344,11 @@ public class InterfazGrafica {
                 juego.restarPuntos(jugadorActual, 5);
             }
 
+            juego.siguienteTurno();
+            actualizarInterfazTurno();
             actualizarPuntuaciones();
             mostrarPalabrasUsadas();
+            resetearPalabraSinNuevasLetras();
             return;
         }
 
@@ -369,53 +360,59 @@ public class InterfazGrafica {
                 "¡Palabra válida!\nPuntos obtenidos: " + puntos,
                 "Puntos obtenidos", JOptionPane.INFORMATION_MESSAGE);
 
-        // Actualizar puntuaciones y mostrar palabras usadas
+        juego.siguienteTurno();
+        actualizarInterfazTurno();
         actualizarPuntuaciones();
         mostrarPalabrasUsadas();
+        resetearPalabraSinNuevasLetras();
 
-        // Cambio de turno
-        cambiarTurno();
+        if (juego.juegoTerminado()) {
+            mostrarResultadosFinales();
+        }
     }
-
     private void pasarTurno() {
-        JOptionPane.showMessageDialog(frame,
-                etiquetaTurnoActual.getText().substring(9) + " ha pasado su turno.",
-                "Pasar turno", JOptionPane.INFORMATION_MESSAGE);
+        juego.jugadorPaso();
 
-        cambiarTurno();
+        if (juego.juegoTerminado()) {
+            mostrarResultadosFinales();
+        } else {
+            actualizarInterfazTurno();
+            actualizarPuntuaciones();
+            resetearPalabraSinNuevasLetras();
+
+            JOptionPane.showMessageDialog(frame,
+                    juego.getJugadorActual() + " es tu turno.",
+                    "Turno cambiado", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
-    private void cambiarTurno() {
+
+    private void resetearPalabraSinNuevasLetras() {
+        palabraActual = new StringBuilder();
+        campoTexto.setText("");
+        indicesUsados.clear();
+
+        for (int i = 0; i < botonesLetras.size(); i++) {
+            if (!indicesUsados.contains(i)) {
+                botonesLetras.get(i).setEnabled(true);
+            }
+        }
+    }
+
+    private void actualizarInterfazTurno() {
+        etiquetaTurnoActual.setText("Turno de: " + juego.getJugadorActual());
+        etiquetaRonda.setText("RONDA " + juego.getRondaActual() + " de 3");
+        actualizarPuntuaciones();
+    }
+
+
+    private void resetearPalabra() {
         // Resetear la palabra actual
         palabraActual = new StringBuilder();
         campoTexto.setText("");
         indicesUsados.clear();
 
-        ArrayList<String> jugadores = juego.getNombresJugadores();
-        String jugadorActual = etiquetaTurnoActual.getText().substring(9);
-
-        int indiceActual = jugadores.indexOf(jugadorActual);
-        int siguienteIndice = (indiceActual + 1) % jugadores.size();
-
-        // Si volvemos al primer jugador, es una nueva ronda
-        if (siguienteIndice == 0) {
-            if (juego.getRondaActual() >= 3) {
-                // Juego terminado
-                mostrarResultadosFinales();
-                return;
-            } else {
-                // Nueva ronda
-                juego.iniciarNuevaRonda();
-                JOptionPane.showMessageDialog(frame,
-                        "¡Comenzando Ronda " + juego.getRondaActual() + "!",
-                        "Nueva Ronda", JOptionPane.INFORMATION_MESSAGE);
-                iniciarRonda();
-                return;
-            }
-        }
-
-        // Actualizar el turno
-        etiquetaTurnoActual.setText("Turno de: " + jugadores.get(siguienteIndice));
+        juego.generarLetras(juego.getDificultad());
         mostrarLetrasGeneradas();
     }
 
@@ -480,7 +477,6 @@ public class InterfazGrafica {
         String ganador = juego.determinarGanador();
         StringBuilder mensaje = new StringBuilder("Resultados Finales:\n\n");
 
-        // Ordenar jugadores por puntuación (de mayor a menor)
         ArrayList<Map.Entry<String, Integer>> listaOrdenada = new ArrayList<>(juego.getPuntuaciones().entrySet());
         listaOrdenada.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
@@ -504,7 +500,7 @@ public class InterfazGrafica {
         JOptionPane.showMessageDialog(frame, mensaje.toString(),
                 "Fin del Juego", JOptionPane.INFORMATION_MESSAGE);
 
-        // Preguntar si desea jugar de nuevo
+        // Preguntar si quiere jugar de nuevo
         int opcion = JOptionPane.showConfirmDialog(frame,
                 "¿Deseas jugar de nuevo?",
                 "Jugar de nuevo", JOptionPane.YES_NO_OPTION);
