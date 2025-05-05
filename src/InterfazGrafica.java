@@ -370,6 +370,7 @@ public class InterfazGrafica {
             mostrarResultadosFinales();
         }
     }
+
     private void pasarTurno() {
         juego.jugadorPaso();
 
@@ -524,9 +525,5 @@ public class InterfazGrafica {
         } else {
             System.exit(0);
         }
-    }
-
-    public static void main(String[] args) {
-        new InterfazGrafica();
     }
 }
