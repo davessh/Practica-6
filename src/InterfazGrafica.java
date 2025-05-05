@@ -370,12 +370,26 @@ public class InterfazGrafica {
             mostrarResultadosFinales();
         }
     }
+
     private void pasarTurno() {
         juego.jugadorPaso();
 
         if (juego.juegoTerminado()) {
             mostrarResultadosFinales();
+            return;
+        }
+
+        // Verificamos si hemos cambiado de ronda
+        // comprobando si el contador de ronda ha aumentado
+        if (Integer.parseInt(etiquetaRonda.getText().split(" ")[1]) != juego.getRondaActual()) {
+            // Si la ronda cambió, actualizamos la interfaz y mostramos mensaje
+            JOptionPane.showMessageDialog(frame,
+                    "¡Todos los jugadores han pasado! Comienza la ronda " + juego.getRondaActual(),
+                    "Nueva Ronda", JOptionPane.INFORMATION_MESSAGE);
+
+            iniciarRonda(); // Actualizamos la interfaz para la nueva ronda
         } else {
+            // Si seguimos en la misma ronda, solo actualizamos la interfaz para el siguiente jugador
             actualizarInterfazTurno();
             actualizarPuntuaciones();
             resetearPalabraSinNuevasLetras();
@@ -511,9 +525,5 @@ public class InterfazGrafica {
         } else {
             System.exit(0);
         }
-    }
-
-    public static void main(String[] args) {
-        new InterfazGrafica();
     }
 }
