@@ -33,7 +33,8 @@ public class GeneradorLetras {
         List<Character> vocal = new ArrayList<>(VOCALES);
 
         // Se generan las letras aleatorias a partir de la fuente seleccionada
-        for (int i = 0; i < cantidad-1; i++) {
+        letrasGeneradas.add(vocal.get(random.nextInt(vocal.size())));
+        for (int i = 1; i < cantidad-1; i++) {
             letrasGeneradas.add(fuente.get(random.nextInt(fuente.size())));
         }
         letrasGeneradas.add(vocal.get(random.nextInt(vocal.size())));

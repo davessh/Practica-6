@@ -71,7 +71,7 @@ public class Diccionario {
     }
 
     private void guardarEnArchivo(String palabra) {
-        try (FileWriter fw = new FileWriter("palabras.txt", true);
+        try (FileWriter fw = new FileWriter("G:\\4toSemestre\\POO\\Practica-6.1\\src\\palabras.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
             out.println(palabra);

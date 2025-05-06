@@ -22,7 +22,9 @@ public class MagoDeLasPalabras {
         this.nombresJugadores = new ArrayList<>();
         this.jugadorActualIndex = 0;
         this.jugadoresQuePasaron = 0;
-        diccionario.cargarDesdeArchivo("C:\\Users\\GF76\\IdeaProjects\\Practica-6.1\\out\\production\\Practica-6\\palabras.txt");
+        diccionario.cargarDesdeArchivo("G:\\4toSemestre\\POO\\Practica-6.1\\src\\palabras.txt");
+
+//        diccionario.cargarDesdeArchivo("C:\\Users\\GF76\\IdeaProjects\\Practica-6.1\\out\\production\\Practica-6\\palabras.txt");
     }
 
     public String getJugadorActual() {

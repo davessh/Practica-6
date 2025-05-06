@@ -51175,6 +51175,7 @@ maorí
 maoísmo
 maoísta
 mapa
+mapas
 mapache
 mapachín
 mapamundi
@@ -51190,6 +51191,7 @@ maque
 maqueador
 maquear
 maqueta
+maquetas
 maquetista
 maqueto
 maqui
@@ -51219,6 +51221,7 @@ maquinización
 maquinizar
 maquis
 mar
+mares
 mara
 marabino
 marabunta
@@ -56595,6 +56598,7 @@ ocurrido
 ocurrir
 ocurso
 océano
+océanos
 oda
 odalisca
 odeón
@@ -56642,6 +56646,7 @@ ofensión
 ofensor
 oferente
 oferta
+ofertas
 ofertante
 ofertar
 ofertorio
@@ -56734,6 +56739,7 @@ ojival
 ojizaino
 ojizarco
 ojo
+ojos
 ojoche
 ojoso
 ojota
@@ -56742,6 +56748,7 @@ ojén
 ojó
 okapi
 ola
+olas
 olaje
 olambre
 olambrilla
@@ -75272,6 +75279,7 @@ toroide
 torondo
 torondón
 toronja
+toronjas
 toronjil
 toronjina
 toronjo
@@ -75316,6 +75324,7 @@ torrontés
 torrotito
 torsión
 torso
+torsos
 torta
 tortada
 tortazo
@@ -75335,6 +75344,7 @@ tortillería
 tortillo
 tortis
 tortita
+tortitas
 tortol
 tortolita
 tortolito
@@ -80301,4 +80311,9 @@ zéjel
 zíngaro
 zócalo
 zóster
-zúa
+zúagueso
+hojas
+rimas
+tiras
+we
+vato

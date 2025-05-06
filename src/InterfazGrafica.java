@@ -46,7 +46,8 @@ public class InterfazGrafica {
         panelMenu.add(Box.createVerticalStrut(20));
         panelMenu.add(tituloLabel);
 
-        ImageIcon icono = new ImageIcon("C:\\Users\\Usuario\\IdeaProjects\\Practica-6.2\\src\\mago.png");
+        ImageIcon icono = new ImageIcon("G:\\4toSemestre\\POO\\Practica-6.1\\src\\mago.png");
+        //ImageIcon icono = new ImageIcon("C:\\Users\\Usuario\\IdeaProjects\\Practica-6.2\\src\\mago.png");
         Image imagen = icono.getImage();
         Image nuevaImagen = imagen.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
         icono = new ImageIcon(nuevaImagen);
@@ -151,7 +152,7 @@ public class InterfazGrafica {
         juego.generarLetras(juego.getDificultad());
         frame = new JFrame("Mago de las Palabras - Juego");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1200, 700); // Aumentamos el ancho para acomodar el nuevo panel
+        frame.setSize(1400, 700); // Aumentamos el ancho para acomodar el nuevo panel
         frame.setLayout(new BorderLayout());
 
         // Panel principal que contendrá todo excepto el panel de palabras usadas
@@ -407,13 +408,15 @@ public class InterfazGrafica {
 
         StringBuilder sb = new StringBuilder("Palabras usadas en esta ronda:\n\n");
 
-        for (String palabra : palabrasUsadas) {
+        Iterator<String> iterador = palabrasUsadas.iterator();
+        while (iterador.hasNext()) {
+            String palabra = iterador.next();
             sb.append("• ").append(palabra).append(" (")
                     .append(juego.obtenerPuntajePalabra(palabra)).append(" pts)\n");
         }
 
         areaPalabrasUsadas.setText(sb.toString());
-        areaPalabrasUsadas.setCaretPosition(0); // Mover el scroll al inicio
+        areaPalabrasUsadas.setCaretPosition(0);
     }
 
     private void pasarTurno() {
